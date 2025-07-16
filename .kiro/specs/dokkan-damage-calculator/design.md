@@ -36,6 +36,7 @@ graph TB
 
 - **フロントエンド**: Next.js 14, React, TypeScript, Tailwind CSS
 - **バックエンド**: FastAPI, Python 3.11+, Pydantic
+- **Python 環境管理**: venv (仮想環境)
 - **データベース**: Supabase (PostgreSQL)
 - **外部 API 統合**: HTTP クライアント (httpx)
 - **デプロイ**: Vercel (フロントエンド), Railway/Heroku (バックエンド)
@@ -215,6 +216,118 @@ interface DamageCalculationResult {
 
 - **モックキャラクターデータ**: 各種パッシブスキルパターンをカバー
 - **計算テストケース**: 境界値、エッジケース、エラーケースを含む
+
+## 開発環境セットアップ
+
+### Python 仮想環境管理
+
+本プロジェクトでは、Python の依存関係管理に **venv** を使用します。これにより、プロジェクト固有の依存関係を分離し、システム全体の Python 環境に影響を与えることなく開発を行えます。
+
+#### 仮想環境の作成と有効化
+
+```bash
+# バックエンドディレクトリに移動
+cd backend
+
+# 仮想環境の作成
+python3 -m venv venv
+
+# 仮想環境の有効化
+# Linux/macOS の場合:
+source venv/bin/activate
+
+# Windows の場合:
+venv\Scripts\activate
+
+# 仮想環境が有効化されていることを確認
+which python  # Linux/macOS
+where python   # Windows
+```
+
+#### 依存関係の管理
+
+```bash
+# 依存関係のインストール
+pip install -r requirements.txt
+
+# 新しいパッケージを追加した場合
+pip freeze > requirements.txt
+
+# 仮想環境の無効化
+deactivate
+```
+
+#### 開発時の注意事項
+
+- **必須**: 開発作業前に必ず仮想環境を有効化する
+- **推奨**: IDE（VS Code 等）で Python インタープリターを仮想環境のものに設定する
+- **禁止**: システム全体の Python 環境に直接パッケージをインストールしない
+
+### Git 管理とファイル除外設定
+
+#### .gitignore 設定
+
+プロジェクトでは以下のファイル・ディレクトリを Git 管理から除外します：
+
+**バックエンド（backend/.gitignore）**
+
+- `venv/` - Python 仮想環境ディレクトリ
+- `__pycache__/` - Python バイトコードファイル
+- `*.py[cod]` - コンパイル済み Python ファイル
+- `.env` - 環境変数ファイル（機密情報含む）
+- `*.log` - ログファイル
+- `.pytest_cache/` - テストキャッシュ
+
+**フロントエンド（frontend/.gitignore）**
+
+- `node_modules/` - Node.js 依存関係
+- `.next/` - Next.js ビルド成果物
+- `.env.local` - ローカル環境変数
+
+**プロジェクトルート（.gitignore）**
+
+- IDE 設定ファイル
+- OS 生成ファイル
+- 一時ファイル・キャッシュ
+
+#### 重要な注意事項
+
+- **環境変数ファイル（.env）は絶対にコミットしない**
+- **仮想環境ディレクトリ（venv/）は除外必須**
+- **機密情報を含むファイルは.gitignore で確実に除外**
+
+### 環境変数設定
+
+#### バックエンド環境変数 (.env)
+
+```bash
+# アプリケーション基本設定
+APP_NAME="ドッカンバトル ダメージ計算 API"
+DEBUG=true
+
+# サーバー設定
+HOST=0.0.0.0
+PORT=8000
+
+# CORS設定
+ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+
+# 外部API設定
+EXTERNAL_API_TIMEOUT=30
+CACHE_TTL=3600
+LOG_LEVEL=INFO
+```
+
+#### フロントエンド環境変数 (.env.local)
+
+```bash
+# API エンドポイント設定
+NEXT_PUBLIC_API_URL=http://localhost:8000
+
+# アプリケーション設定
+NEXT_PUBLIC_APP_NAME="ドッカンバトル ダメージ計算ツール"
+NODE_ENV=development
+```
 
 ## パフォーマンス考慮事項
 
